@@ -1,0 +1,28 @@
+<!DOCTYPE html> <!-- For more information visit: https://fipsok.de -->
+<html lang="de">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="style.css">
+      <title>Onboard Led</title>
+      <script>
+         window.addEventListener('DOMContentLoaded', function () {
+		   elem = document.querySelector('button');
+           elem.addEventListener('click', once.bind(this, '?zap='));
+         }, once(''));
+         function once(arg) {
+           fetch('bled' + arg).then(response => {
+             return response.text();
+           }).then(text => {
+             elem.innerHTML = 'LED ' + text;
+             elem.style.backgroundColor = text == 'Ein' ? '#adff2f' : 'red';
+           });
+         }
+      </script>
+   </head>
+   <body>
+      <h2>Onboard Led schalten</h2>
+      <h2>Esp8266 Nodemcu Wemos</h2>
+      <button></button>
+   </body>
+</html>

@@ -1,0 +1,51 @@
+
+<!DOCTYPE HTML> <!-- For more information visit: https://fipsok.de -->
+<html lang="de">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Uhrzeit</title>
+    <script>
+      function renew() {
+        fetch('/time').then(function (response) {
+          return response.json();
+        }).then(function (array) {
+          document.querySelector('span').innerHTML = array[0];;
+        });
+      }
+      document.addEventListener('DOMContentLoaded', renew, setInterval(renew, 1000));
+    </script>
+    <style>
+      body {
+        padding: 10px;
+        font-size: 3.2em;
+      }
+      main {
+		display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: black;
+        width: 280px;
+        height: 100px;
+        padding: .2em;
+        border: .15em solid #aeaeab;
+        box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.7);
+        border-radius: .2em;
+      }
+      span {
+        color: #02fc07;
+        position: relative;
+        top: .5em;
+        left: .1em;
+        letter-spacing: .1em;
+        font-weight: bold
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <span></span>
+    </main>
+  </body>
+</html>

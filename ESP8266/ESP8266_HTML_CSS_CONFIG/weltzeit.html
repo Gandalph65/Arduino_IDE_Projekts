@@ -1,0 +1,85 @@
+
+<!DOCTYPE HTML> <!-- For more information visit: https://fipsok.de -->
+<html lang="de">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <title>Weltzeit</title>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+	  	var out, li = document.getElementById('list');
+        fetch('https://raw.githubusercontent.com/nayarsystems/posix_tz_db/master/zones.json').then(resp => {
+		  if (resp.ok) send();
+          return resp.json();
+        }).then(obj => {
+          for (const [key, value] of Object.entries(obj)) {
+            out += `<option value="${value}">${key}</option>`;
+          }
+		  li.innerHTML = out;
+        });
+	    li.addEventListener('change', send);
+	    renew(), setInterval(renew, 1000);
+	    function send() {
+	      let formData = new FormData();
+		  formData.append('zone', '["' + li.selectedIndex + '","' + li.value + '"]');
+          fetch('/posixTZ', {
+	        method: 'post',
+	        body: li.selectedIndex >= 0 ? formData : ''
+          }).then(resp => {
+            return resp.text();
+          }).then(text => {
+		    li.selectedIndex = text;
+		  });
+	    }
+        function renew() {
+          fetch('/posixTZ').then(resp => {
+            return resp.json();
+          }).then(array => {
+            document.getElementById('time').innerHTML = array[0];
+		    document.getElementById('date').innerHTML = array[1];
+          });
+        }
+	  });
+    </script>
+    <style>
+      body {
+        padding: 1em 0;
+        font-size: 3em;
+      }
+	  main {
+		display: flex;
+        flex-flow: column;
+        align-items: center;
+        background-color: black;
+        padding: .2em;
+        border: .15em solid #aeaeab;
+		border-radius: .2em;
+        box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.7);
+	  }
+	  select,span {
+        margin-top: .5em;
+      }
+	  select {
+	    -webkit-appearance: none;
+        appearance: none;
+        border: none;
+        background: black;
+        color: #fff;
+        font-family: Sans-serif;
+        font-size: .4em;
+	  }
+      span {
+        color: #00ff05;
+        font-weight: bold;
+      }	  
+    </style>
+  </head>
+  <body>
+    <main>
+	  <select id="list"></select>
+      <span id="time"></span>
+      <span id="date"></span>
+	</main>
+  </body>
+</html>
